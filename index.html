@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArsiFlow Studio — Platform Perencanaan Desain & Presentasi Klien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-canvas: #F8F7F4;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F0EFEA;
+      --ink-primary: #1C1917;
+      --ink-muted: #57534E;
+      --accent: #C26D3B;
+      --accent-dark: #A5582B;
+      --accent-soft: #FDF3EC;
+      --border: #E5E2DC;
+      --success: #15803D;
+      --warning: #B45309;
+      --danger: #DC2626;
+      --gallery-bg: #0B1120;
+      --gallery-card: #131C31;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(28, 25, 23, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-canvas);
+      color: var(--ink-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .hidden { display: none !important; }
+    .muted { color: var(--ink-muted); }
+    .text-xs { font-size: 0.78rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-20 { margin-bottom: 20px; }
+
+    /* Buttons & Inputs */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-decoration: none;
+      min-height: 40px;
+    }
+    .btn-sm { padding: 7px 12px; font-size: 0.8125rem; min-height: 36px; }
+    .btn-primary { background: var(--ink-primary); color: #fff; }
+    .btn-primary:hover { background: #332E2B; }
+    .btn-terracotta { background: var(--accent); color: #fff; }
+    .btn-terracotta:hover { background: var(--accent-dark); }
+    .btn-outline { background: var(--bg-card); border-color: var(--border); color: var(--ink-primary); }
+    .btn-outline:hover { background: var(--bg-subtle); border-color: #D6D1C7; }
+    .btn-ghost { background: transparent; color: var(--ink-muted); }
+    .btn-ghost:hover { background: var(--bg-subtle); color: var(--ink-primary); }
+    .btn-danger-ghost { background: transparent; color: var(--danger); }
+    .btn-danger-ghost:hover { background: #FEF2F2; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      background: #fff;
+      color: var(--ink-primary);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid rgba(194, 109, 59, 0.25);
+      border-color: var(--accent);
+    }
+
+    /* Topbar */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .topbar-left, .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .studio-brand-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 4px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+    .studio-brand-btn:hover { background: var(--bg-subtle); }
+    .studio-logo, .studio-logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .studio-logo-badge {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      font-size: 0.92rem;
+      letter-spacing: 0.03em;
+    }
+    .studio-title { display: block; font-weight: 700; font-size: 0.96rem; color: var(--ink-primary); }
+    .studio-sub { display: block; font-size: 0.73rem; color: var(--ink-muted); }
+
+    .project-selector-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 12px;
+      border-left: 1px solid var(--border);
+    }
+    .project-selector-wrap select { min-width: 220px; font-weight: 600; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-subtle);
+      color: var(--ink-muted);
+    }
+    .status-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); }
+    .status-pill.online { background: #ECFDF5; color: var(--success); }
+    .status-pill.online .dot { background: var(--success); }
+
+    /* Meta Bar & Tabs */
+    .project-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+    .meta-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .meta-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .studio-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 10px 24px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-panel { display: none; padding: 24px; max-width: 1380px; margin: 0 auto; }
+    .tab-panel.active { display: block; }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .filter-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip-btn {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .chip-btn.active { background: var(--ink-primary); color: #fff; border-color: var(--ink-primary); }
+
+    /* Editorial Bento Grid Cards */
+    .slides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .slide-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .slide-card.is-hidden { opacity: 0.62; }
+    .slide-thumb-box {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      background: #EAE7E1;
+      overflow: hidden;
+    }
+    .slide-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+    .slide-badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .pill-dark {
+      background: rgba(11, 17, 32, 0.84);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.71rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pill-drive {
+      background: #ECFDF5;
+      color: var(--success);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .slide-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .slide-title { font-weight: 700; font-size: 1rem; }
+    .slide-desc { font-size: 0.84rem; color: var(--ink-muted); flex: 1; }
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .swatch-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+    }
+    .swatch-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.18); flex-shrink: 0; }
+    .slide-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: #FCFBF9;
+    }
+
+    /* Shimmer Loading Skeleton */
+    .shimmer-skeleton {
+      background: linear-gradient(90deg, #e5e2dc 25%, #f3f1ed 50%, #e5e2dc 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Cards, Brief & RAB Table */
+    .two-col-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+    .inline-form { display: flex; gap: 8px; margin-bottom: 14px; }
+    .toggle-inline { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
+    .brief-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .brief-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-canvas);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .brief-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.875rem; flex: 1; }
+    .brief-item.done span { text-decoration: line-through; color: var(--ink-muted); }
+
+    .budget-summary-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-box { background: var(--bg-canvas); padding: 12px; border-radius: 9px; border: 1px solid var(--border); }
+    .stat-label { font-size: 0.72rem; color: var(--ink-muted); display: block; margin-bottom: 2px; }
+    .stat-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.94rem; }
+
+    .table-wrap { overflow-x: auto; }
+    .rab-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .rab-table th, .rab-table td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    .rab-table input { padding: 6px 8px; font-size: 0.8rem; }
+    .rab-add-form {
+      display: grid;
+      grid-template-columns: 1.1fr 1.6fr 0.7fr 0.7fr 1.2fr auto;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    /* Phases Stepper */
+    .phases-stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .phase-card {
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-canvas);
+    }
+    .phase-card.active { border-color: var(--accent); background: var(--accent-soft); }
+    .phase-card.approved { border-color: var(--success); background: #ECFDF5; }
+
+    .log-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .log-entry { padding: 12px; border-radius: 8px; background: var(--bg-canvas); border: 1px solid var(--border); font-size: 0.84rem; }
+
+    /* ================= PRESENTATION DARK GALLERY ================= */
+    .presentation-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--gallery-bg);
+      color: #F8FAFC;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+    .pres-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(19, 28, 49, 0.94);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .pres-brand { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; flex-wrap: wrap; }
+    .pres-studio { color: #F59E0B; font-weight: 700; }
+    .pres-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pres-tool-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 38px;
+    }
+    .pres-tool-btn.active { background: var(--accent); border-color: var(--accent); }
+
+    .pres-stage {
+      flex: 1;
+      position: relative;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .pres-slide-content { width: 100%; max-width: 1140px; margin: auto; }
+
+    .cover-slide {
+      background: var(--gallery-card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 34px;
+    }
+    .cover-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 22px 0; }
+    .cover-stat { background: rgba(255, 255, 255, 0.05); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+
+    .visual-slide-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .canvas-frame {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #060913;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .canvas-frame img { width: 100%; max-height: 64vh; object-fit: contain; display: block; margin: auto; }
+
+    /* Interactive Hotspot Pins */
+    .hotspot-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 0 6px rgba(194, 109, 59, 0.35);
+      animation: pulsePin 2s infinite;
+      z-index: 6;
+    }
+    @keyframes pulsePin {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(194, 109, 59, 0.45); }
+      50% { box-shadow: 0 0 0 12px rgba(194, 109, 59, 0.05); }
+    }
+
+    /* Before / After Slider */
+    .ba-container { position: relative; width: 100%; overflow: hidden; }
+    .ba-after { position: absolute; inset: 0; overflow: hidden; }
+    .ba-badge-left, .ba-badge-right {
+      position: absolute;
+      top: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(11, 17, 32, 0.82);
+      color: #fff;
+      z-index: 4;
+    }
+    .ba-badge-left { left: 12px; }
+    .ba-badge-right { right: 12px; background: var(--accent); }
+    .ba-range {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72%;
+      z-index: 5;
+      accent-color: var(--accent);
+      cursor: ew-resize;
+    }
+
+    /* Virtual Laser Pointer */
+    .laser-dot {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 14px 6px rgba(239, 68, 68, 0.85);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 150;
+    }
+
+    .hotspot-sheet {
+      position: fixed;
+      right: 24px;
+      bottom: 90px;
+      width: 330px;
+      background: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 16px;
+      z-index: 120;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+    .hotspot-sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .badge-terracotta { background: var(--accent); color: #fff; padding: 3px 9px; border-radius: 6px; font-size: 0.73rem; font-weight: 700; display: inline-block; }
+
+    .feedback-drawer {
+      position: fixed;
+      right: 24px;
+      bottom: 90px;
+      width: 350px;
+      background: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 16px;
+      z-index: 120;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .reaction-row { display: flex; gap: 6px; margin-bottom: 10px; }
+    .react-btn {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .react-btn.active { background: var(--accent); border-color: var(--accent); }
+
+    .pres-footer {
+      background: rgba(19, 28, 49, 0.96);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+    }
+    .pres-thumb-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      justify-content: center;
+    }
+    .thumb-pill {
+      padding: 7px 13px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #CBD5E1;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .thumb-pill.active { border-color: var(--accent); color: #fff; background: rgba(194, 109, 59, 0.28); }
+
+    .mobile-thumb-bar { display: none; }
+
+    /* Modals & Overlays */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 17, 32, 0.68);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 200;
+    }
+    .modal-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+    }
+    .modal-card.modal-lg { max-width: 960px; }
+    .modal-card.modal-sm { max-width: 390px; }
+    .modal-header, .modal-footer {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-footer { border-bottom: none; border-top: 1px solid var(--border); justify-content: flex-end; gap: 8px; }
+    .modal-body { padding: 20px; }
+    .close-x { background: transparent; border: none; font-size: 1.15rem; cursor: pointer; color: inherit; padding: 4px 8px; }
+
+    .field-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; }
+    .field-label input, .field-label select, .field-label textarea { margin-top: 4px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .editor-canvas-wrap {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: crosshair;
+      background: #162136;
+    }
+    .editor-canvas-wrap img { width: 100%; display: block; }
+    .inline-hotspot-box {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(194, 109, 59, 0.35);
+      border-radius: 10px;
+    }
+    .material-form { display: grid; grid-template-columns: 42px 1.4fr 1fr 0.7fr 1fr auto; gap: 6px; }
+    .mini-list { display: flex; flex-direction: column; gap: 6px; }
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+
+    .qr-box {
+      width: 178px;
+      height: 178px;
+      margin: 0 auto;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+    }
+    .copy-row { display: flex; gap: 8px; }
+    .pin-input { text-align: center; font-size: 1.45rem; letter-spacing: 0.42em; font-family: 'JetBrains Mono', monospace; }
+    .error-text { color: var(--danger); font-size: 0.8rem; font-weight: 600; margin-top: 8px; }
+
+    .drop-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 17, 32, 0.84);
+      z-index: 300;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      padding: 20px;
+    }
+    .drop-card {
+      border: 2px dashed var(--accent);
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.06);
+      max-width: 460px;
+    }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 340px;
+    }
+    .toast {
+      background: var(--ink-primary);
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-size: 0.84rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+      border-left: 4px solid var(--accent);
+    }
+
+    .pres-skeleton { width: 100%; max-width: 900px; }
+    .skeleton-hero { height: 52vh; border-radius: 14px; margin-bottom: 16px; opacity: 0.25; }
+    .skeleton-line { height: 24px; width: 60%; border-radius: 8px; opacity: 0.25; }
+
+    /* Responsive Mobile-First Ergonomics (<768px) */
+    @media (max-width: 768px) {
+      .topbar, .project-meta-bar, .tab-panel { padding-left: 14px; padding-right: 14px; }
+      .project-selector-wrap { padding-left: 0; border-left: none; width: 100%; }
+      .project-selector-wrap select { flex: 1; min-width: 0; }
+      .two-col-layout,
+      .visual-slide-grid,
+      .phases-stepper,
+      .budget-summary-strip,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .rab-add-form,
+      .material-form {
+        grid-template-columns: 1fr 1fr;
+      }
+      .pres-thumb-strip { display: none; }
+      .mobile-thumb-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .thumb-nav-btn {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.09);
+        color: #fff;
+        font-family: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .thumb-nav-btn.accent { background: var(--accent); border-color: var(--accent); }
+      .thumb-counter { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #CBD5E1; }
+      .hotspot-sheet,
+      .feedback-drawer {
+        left: 12px;
+        right: 12px;
+        bottom: 76px;
+        width: auto;
+      }
+      .cover-slide { padding: 20px; }
+    }
+
+    /* Print Layout for PDF Export */
+    .print-only { display: none; }
+    @media print {
+      .app-shell, .presentation-overlay, .modal-backdrop, .toast-container, .drop-overlay { display: none !important; }
+      .print-only { display: block !important; padding: 24px; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Global Drag & Drop Overlay -->
+  <div id="dropOverlay" class="drop-overlay hidden">
+    <div class="drop-card">
+      <div class="drop-icon">📐</div>
+      <h3>Lepaskan Gambar Desain di Sini</h3>
+      <p class="text-sm mt-8">Mendukung JPG, PNG, WEBP, SVG — Otomatis tersimpan ke Google Drive &amp; Cache Lokal</p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ================= WORKSPACE ARSITEK ================= -->
+  <div id="architectWorkspace" class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="studio-brand-btn" data-action="open-settings" title="Klik untuk ubah identitas studio & cloud">
+          <img id="studioLogoImg" class="studio-logo hidden" alt="Logo Studio" onerror="this.classList.add('hidden')" />
+          <div id="studioLogoFallback" class="studio-logo-badge">AF</div>
+          <div class="studio-brand-text">
+            <span id="studioNameDisplay" class="studio-title">ArsiFlow Studio</span>
+            <span id="studioTaglineDisplay" class="studio-sub">Architecture &amp; Interior Planning</span>
+          </div>
+        </button>
+
+        <div class="project-selector-wrap">
+          <select id="projectSelect" aria-label="Pilih Proyek"></select>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="open-new-project">+ Proyek Baru</button>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="syncStatusPill" class="status-pill offline" title="Status koneksi server backend">
+          <span class="dot"></span>
+          <span id="syncStatusText">Mode Lokal (Offline)</span>
+        </div>
+
+        <button type="button" class="btn btn-outline btn-sm" data-action="open-settings">⚙ Pengaturan &amp; Cloud</button>
+        <button type="button" class="btn btn-outline btn-sm" data-action="open-share">🔗 Bagikan ke Klien</button>
+        <button type="button" class="btn btn-primary btn-sm" data-action="start-presentation">▶ Presentasi Klien</button>
+      </div>
+    </header>
+
+    <!-- Project Context Bar -->
+    <section class="project-meta-bar">
+      <div class="meta-chips" id="projectMetaChips"></div>
+      <div class="meta-actions">
+        <label class="btn btn-terracotta btn-sm file-btn">
+          + Upload Gambar
+          <input type="file" id="quickUploadInput" accept="image/*" multiple hidden />
+        </label>
+        <button type="button" class="btn btn-outline btn-sm" data-action="print-report">🖨 Cetak PDF</button>
+      </div>
+    </section>
+
+    <!-- 3-Tab Studio Navigation -->
+    <nav class="studio-tabs" role="tablist">
+      <button type="button" class="tab-btn active" data-tab="storyboard">1. Papan Presentasi &amp; Gambar</button>
+      <button type="button" class="tab-btn" data-tab="brief-rab">2. Kebutuhan Klien &amp; Estimasi RAB</button>
+      <button type="button" class="tab-btn" data-tab="phases">3. Status Fase &amp; Persetujuan</button>
+    </nav>
+
+    <!-- TAB 1: STORYBOARD -->
+    <main id="tab-storyboard" class="tab-panel active">
+      <div class="panel-header">
+        <div>
+          <h2>Papan Presentasi Visual</h2>
+          <p class="muted text-sm">Atur urutan slide, tambahkan titik hotspot penjelasan ruang, material swatch, atau unggah revisi v2.</p>
+        </div>
+        <div class="filter-group" id="phaseFilterGroup">
+          <button type="button" class="chip-btn active" data-phase-filter="all">Semua Fase</button>
+          <button type="button" class="chip-btn" data-phase-filter="concept">Concept</button>
+          <button type="button" class="chip-btn" data-phase-filter="schematic">Schematic</button>
+          <button type="button" class="chip-btn" data-phase-filter="dd">Design Dev</button>
+          <button type="button" class="chip-btn" data-phase-filter="ded">Construction</button>
+        </div>
+      </div>
+      <div id="slidesGrid" class="slides-grid"></div>
+    </main>
+
+    <!-- TAB 2: BRIEF & RAB -->
+    <main id="tab-brief-rab" class="tab-panel">
+      <div class="two-col-layout">
+        <section class="card">
+          <div class="card-header">
+            <h3>Daftar Kebutuhan Klien (Client Brief)</h3>
+            <span id="briefProgressBadge" class="badge">0/0 Terpenuhi</span>
+          </div>
+          <form id="addBriefForm" class="inline-form">
+            <input type="text" id="newBriefInput" placeholder="Tambah kebutuhan ruang / konsep baru..." required />
+            <button type="submit" class="btn btn-primary btn-sm">Tambah</button>
+          </form>
+          <ul id="briefList" class="brief-list"></ul>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h3>Kalkulator Estimasi RAB</h3>
+              <p class="muted text-xs">Otomatis tersinkronisasi dengan Material Swatch &amp; Slide Sampul</p>
+            </div>
+            <label class="toggle-inline text-xs">
+              <input type="checkbox" id="toggleClientRab" checked />
+              Tampilkan ke Klien
+            </label>
+          </div>
+
+          <div class="budget-summary-strip" id="budgetSummaryStrip"></div>
+
+          <div class="table-wrap">
+            <table class="rab-table">
+              <thead>
+                <tr>
+                  <th>Kategori</th>
+                  <th>Uraian Pekerjaan</th>
+                  <th>Vol</th>
+                  <th>Sat</th>
+                  <th>Harga Satuan (Rp)</th>
+                  <th>Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="rabTableBody"></tbody>
+            </table>
+          </div>
+
+          <form id="addRabForm" class="rab-add-form">
+            <select id="rabCatInput">
+              <option value="Struktur">Struktur</option>
+              <option value="Arsitektur">Arsitektur</option>
+              <option value="Interior &amp; Material">Interior &amp; Material</option>
+              <option value="MEP">MEP</option>
+            </select>
+            <input type="text" id="rabNameInput" placeholder="Nama item pekerjaan" required />
+            <input type="number" id="rabVolInput" placeholder="Vol" step="0.01" min="0.01" required />
+            <input type="text" id="rabUnitInput" placeholder="m2/unit" value="m2" required />
+            <input type="number" id="rabPriceInput" placeholder="Harga satuan" min="0" required />
+            <button type="submit" class="btn btn-terracotta btn-sm">+ Item</button>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <!-- TAB 3: PHASES & APPROVALS -->
+    <main id="tab-phases" class="tab-panel">
+      <div class="card mb-20">
+        <h3>Linimasa 4 Tahapan Perencanaan Arsitektur</h3>
+        <p class="muted text-sm mb-16">Pilih fase aktif proyek. Klien dapat mengesahkan fase aktif langsung dari tautan presentasi.</p>
+        <div id="phasesStepper" class="phases-stepper"></div>
+      </div>
+
+      <div class="two-col-layout">
+        <section class="card">
+          <h3>Catatan &amp; Tanggapan Klien</h3>
+          <div id="feedbackLogList" class="log-list"></div>
+        </section>
+        <section class="card">
+          <h3>Berita Acara Pengesahan Digital (Sign-Off)</h3>
+          <div id="approvalLogList" class="log-list"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= PORTAL PRESENTASI KLIEN (DARK GALLERY) ================= -->
+  <div id="presentationOverlay" class="presentation-overlay hidden">
+    <header class="pres-topbar">
+      <div class="pres-brand">
+        <span id="presStudioName" class="pres-studio">ArsiFlow Studio</span>
+        <span class="pres-sep">/</span>
+        <span id="presProjectTitle" class="pres-proj">Memuat Proyek...</span>
+      </div>
+
+      <div class="pres-tools">
+        <button type="button" id="laserToggleBtn" class="pres-tool-btn" data-action="toggle-laser">🔴 Laser Pointer</button>
+        <button type="button" id="compareToggleBtn" class="pres-tool-btn hidden" data-action="toggle-compare">⇄ Bandingkan v1/v2</button>
+        <button type="button" id="exitPresBtn" class="pres-tool-btn" data-action="exit-presentation">✕ Tutup</button>
+        <button type="button" id="unlockStudioBtn" class="pres-tool-btn hidden" data-action="open-pin-unlock" title="Buka kunci ruang kerja arsitek">🔒 Mode Klien</button>
+      </div>
+    </header>
+
+    <div id="presStage" class="pres-stage">
+      <!-- Shimmer Skeleton saat memuat data cloud -->
+      <div id="presSkeleton" class="pres-skeleton hidden">
+        <div class="shimmer-skeleton skeleton-hero"></div>
+        <div class="shimmer-skeleton skeleton-line"></div>
+      </div>
+
+      <!-- Konten Slide Aktif -->
+      <div id="presSlideContent" class="pres-slide-content"></div>
+
+      <!-- Virtual Laser Dot -->
+      <div id="laserDot" class="laser-dot hidden"></div>
+    </div>
+
+    <!-- Hotspot Detail Popover / Mobile Bottom Sheet -->
+    <div id="hotspotSheet" class="hotspot-sheet hidden">
+      <div class="hotspot-sheet-header">
+        <span id="hotspotBadge" class="badge-terracotta">Titik #1</span>
+        <button type="button" class="close-x" data-action="close-hotspot-sheet">✕</button>
+      </div>
+      <h4 id="hotspotTitle" class="mb-8">Judul Area</h4>
+      <p id="hotspotDesc" class="text-sm" style="color:#CBD5E1">Deskripsi detail arsitektur.</p>
+    </div>
+
+    <!-- Client Feedback Drawer -->
+    <div id="clientFeedbackDrawer" class="feedback-drawer hidden">
+      <div class="drawer-header">
+        <h4>Tanggapan Klien untuk Slide Ini</h4>
+        <button type="button" class="close-x" data-action="toggle-feedback-drawer">✕</button>
+      </div>
+      <div class="reaction-row">
+        <button type="button" class="react-btn active" data-reaction="approved">👍 Setuju Desain</button>
+        <button type="button" class="react-btn" data-reaction="revision_needed">✏️ Minta Revisi</button>
+        <button type="button" class="react-btn" data-reaction="question">💬 Pertanyaan</button>
+      </div>
+      <textarea id="clientCommentInput" rows="3" placeholder="Tulis catatan atau masukan Anda di sini..."></textarea>
+      <button type="button" class="btn btn-terracotta w-full mt-8" data-action="submit-client-feedback">Kirim Tanggapan</button>
+    </div>
+
+    <!-- Desktop Thumbnail Strip & Mobile Thumb-Zone Bar -->
+    <footer class="pres-footer">
+      <div id="presThumbStrip" class="pres-thumb-strip"></div>
+
+      <div class="mobile-thumb-bar">
+        <button type="button" class="thumb-nav-btn" data-action="prev-slide" aria-label="Slide Sebelumnya">←</button>
+        <span id="mobileSlideCounter" class="thumb-counter">1 / 1</span>
+        <button type="button" class="thumb-nav-btn" data-action="toggle-feedback-drawer" aria-label="Beri Masukan">💬</button>
+        <button type="button" class="thumb-nav-btn accent" data-action="jump-approval">✓ Setujui</button>
+        <button type="button" class="thumb-nav-btn" data-action="next-slide" aria-label="Slide Berikutnya">→</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <!-- Modal 1: Editor Hotspot & Material Swatch -->
+  <div id="slideEditorModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="editorModalTitle">Edit Detail Slide, Hotspot &amp; Material</h3>
+        <button type="button" class="close-x" data-action="close-modals">✕</button>
+      </div>
+      <div class="modal-body two-col-layout">
+        <div>
+          <p class="text-xs muted mb-8">Klik titik mana saja pada gambar di bawah untuk menambah <strong>Hotspot Penjelasan Ruang</strong>:</p>
+          <div id="editorCanvasWrap" class="editor-canvas-wrap">
+            <img id="editorPreviewImg" alt="Preview Slide" onerror="this.src='https://placehold.co/800x500/162136/F8FAFC?text=Pratinjau+Gambar'" />
+            <div id="editorHotspotLayer" class="hotspot-layer"></div>
+          </div>
+
+          <!-- Inline Hotspot Input Form (Replaces prompt() cleanly) -->
+          <div id="pendingHotspotBox" class="inline-hotspot-box hidden">
+            <div class="text-xs mb-8" style="font-weight:700;color:var(--accent)">
+              📍 Tambah Titik Hotspot pada Koordinat (<span id="pendingHsCoords">50%, 50%</span>)
+            </div>
+            <input type="text" id="pendingHsTitle" placeholder="Judul area (mis. Bukaan Ventilasi Silang)" class="mb-8" />
+            <input type="text" id="pendingHsDesc" placeholder="Penjelasan singkat arsitektural untuk klien..." class="mb-8" />
+            <div class="btn-row">
+              <button type="button" class="btn btn-terracotta btn-sm" data-action="confirm-add-hotspot">Simpan Titik</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-add-hotspot">Batal</button>
+            </div>
+          </div>
+
+          <div id="editorHotspotList" class="mini-list mt-12"></div>
+        </div>
+
+        <div>
+          <label class="field-label">Judul Slide
+            <input type="text" id="editSlideTitle" />
+          </label>
+          <div class="grid-2">
+            <label class="field-label">Kategori
+              <input type="text" id="editSlideCategory" />
+            </label>
+            <label class="field-label">Fase Desain
+              <select id="editSlidePhase">
+                <option value="concept">Concept Design</option>
+                <option value="schematic">Schematic Design</option>
+                <option value="dd">Design Development</option>
+                <option value="ded">Construction Doc</option>
+              </select>
+            </label>
+          </div>
+          <label class="field-label">Narasi Presentasi untuk Klien
+            <textarea id="editSlideDesc" rows="2"></textarea>
+          </label>
+
+          <hr class="divider" />
+          <h4 class="mb-8">Palet Spesifikasi Material (Swatch)</h4>
+          <div id="editorMaterialList" class="mini-list mb-8"></div>
+          <form id="addMaterialForm" class="material-form">
+            <input type="color" id="matColorInput" value="#C26D3B" title="Warna Material" style="height:38px;padding:2px" />
+            <input type="text" id="matNameInput" placeholder="Nama Material (mis. Kayu Ulin)" required />
+            <input type="text" id="matBrandInput" placeholder="Kode / Merek" />
+            <input type="number" id="matVolInput" placeholder="Vol" step="0.1" value="10" />
+            <input type="number" id="matPriceInput" placeholder="Harga/satuan" value="250000" />
+            <button type="submit" class="btn btn-outline btn-sm">+ Swatch</button>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" data-action="close-modals">Tutup</button>
+        <button type="button" class="btn btn-primary" data-action="save-slide-editor">Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Share ke Klien + QR Code -->
+  <div id="shareModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Bagikan Presentasi Terkunci ke Klien</h3>
+        <button type="button" class="close-x" data-action="close-modals">✕</button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="muted text-sm mb-12">Tautan ini mengunci tampilan khusus untuk klien (tanpa akses edit proyek atau harga satuan internal).</p>
+        <div id="qrCodeBox" class="qr-box"></div>
+        <div class="copy-row mt-12">
+          <input type="text" id="shareUrlInput" readonly />
+          <button type="button" class="btn btn-primary btn-sm" data-action="copy-share-url">Salin Link</button>
+        </div>
+        <div class="share-actions mt-16">
+          <a id="whatsappShareBtn" class="btn btn-terracotta w-full" target="_blank" rel="noopener">Kirim via WhatsApp</a>
+          <button type="button" class="btn btn-outline w-full mt-8" data-action="preview-client-mode">Pratinjau Mode Terkunci Sekarang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Pengaturan Studio, Cloud Sync & Backup -->
+  <div id="settingsModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Identitas Studio &amp; Sinkronisasi Cloud</h3>
+        <button type="button" class="close-x" data-action="close-modals">✕</button>
+      </div>
+      <div class="modal-body">
+        <h4 class="mb-8">1. White-Label Branding Studio</h4>
+        <div class="grid-2">
+          <label class="field-label">Nama Biro Arsitek
+            <input type="text" id="cfgStudioName" />
+          </label>
+          <label class="field-label">PIN Buka Kunci Tablet
+            <input type="password" id="cfgStudioPin" maxlength="6" placeholder="1234" />
+          </label>
+        </div>
+        <label class="field-label">Tagline Studio
+          <input type="text" id="cfgStudioTagline" />
+        </label>
+        <label class="field-label">Upload Logo Studio (Opsional)
+          <input type="file" id="cfgStudioLogoInput" accept="image/*" />
+        </label>
+
+        <hr class="divider" />
+        <h4 class="mb-8">2. Koneksi Server Backend (PostgreSQL &amp; Google Drive)</h4>
+        <label class="field-label">URL Backend API
+          <input type="url" id="cfgApiUrl" placeholder="http://localhost:4000" />
+        </label>
+        <label class="field-label">Studio Master Key (Authorization Bearer)
+          <input type="password" id="cfgMasterKey" placeholder="arsiflow-secret-key-studio-anda" />
+        </label>
+        <div class="btn-row mt-8">
+          <button type="button" class="btn btn-primary btn-sm" data-action="manual-cloud-sync">☁ Sinkronkan Proyek Sekarang</button>
+        </div>
+
+        <hr class="divider" />
+        <h4 class="mb-8">3. Cadangan Paket Proyek (.JSON)</h4>
+        <div class="btn-row">
+          <button type="button" class="btn btn-outline btn-sm" data-action="export-json">⬇ Ekspor Backup .JSON</button>
+          <label class="btn btn-outline btn-sm file-btn">
+            ⬆ Impor Backup .JSON
+            <input type="file" id="importJsonInput" accept=".json" hidden />
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-action="save-settings">Simpan Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Proyek Baru -->
+  <div id="newProjectModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Buat Proyek Arsitektur Baru</h3>
+        <button type="button" class="close-x" data-action="close-modals">✕</button>
+      </div>
+      <form id="newProjectForm" class="modal-body">
+        <label class="field-label">Nama Proyek
+          <input type="text" id="npName" placeholder="Mis. Villa Tropis Ubud" required />
+        </label>
+        <div class="grid-2">
+          <label class="field-label">Nama Klien
+            <input type="text" id="npClient" placeholder="Bapak Hendra" required />
+          </label>
+          <label class="field-label">Lokasi
+            <input type="text" id="npLocation" placeholder="Bali / Jakarta" required />
+          </label>
+        </div>
+        <div class="grid-3">
+          <label class="field-label">Luas Tanah (m²)
+            <input type="number" id="npLand" value="250" min="1" required />
+          </label>
+          <label class="field-label">Luas Bangunan (m²)
+            <input type="number" id="npBuilding" value="180" min="1" required />
+          </label>
+          <label class="field-label">Target RAB (Rp)
+            <input type="number" id="npBudget" value="1500000000" min="0" required />
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-action="close-modals">Batal</button>
+          <button type="submit" class="btn btn-primary">Buat &amp; Siapkan Folder Drive</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: PIN Unlock -->
+  <div id="pinUnlockModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Buka Kunci Ruang Kerja Studio</h3>
+        <button type="button" class="close-x" data-action="close-modals">✕</button>
+      </div>
+      <form id="pinUnlockForm" class="modal-body">
+        <p class="muted text-sm mb-12">Masukkan PIN Studio untuk kembali ke mode editor arsitek (Default: <code>1234</code>).</p>
+        <input type="password" id="pinUnlockInput" maxlength="6" placeholder="••••" class="pin-input" required />
+        <p id="pinErrorMsg" class="error-text hidden">PIN Studio tidak sesuai. Silakan coba lagi.</p>
+        <button type="submit" class="btn btn-primary w-full mt-12">Buka Kunci</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Print Area Khusus Cetak PDF -->
+  <div id="printReportArea" class="print-only"></div>
+
+  <script>
+    (() => {
+      // =========================================================================
+      // 1. HYBRID STORAGE MODULE (IndexedDB Local Cache + Node.js Google Drive)
+      // =========================================================================
+      const DB_NAME = 'ArsiFlowMediaDB';
+      const DB_VERSION = 1;
+      const STORE_NAME = 'images';
+
+      function openMediaDB() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, DB_VERSION);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+              db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function saveImageToIndexedDB(id, dataUrl, meta = {}) {
+        try {
+          const db = await openMediaDB();
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).put({
+              id,
+              dataUrl,
+              meta,
+              savedAt: new Date().toISOString(),
+            });
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch {
+          return false;
+        }
+      }
+
+      async function getImageFromIndexedDB(id) {
+        try {
+          const db = await openMediaDB();
+          return new Promise((resolve) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const req = tx.objectStore(STORE_NAME).get(id);
+            req.onsuccess = () => resolve(req.result?.dataUrl || null);
+            req.onerror = () => resolve(null);
+          });
+        } catch {
+          return null;
+        }
+      }
+
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function checkDriveServerHealth(apiBaseUrl) {
+        if (!apiBaseUrl) return false;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 2500);
+        try {
+          const res = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/health`, {
+            signal: controller.signal,
+          });
+          clearTimeout(timer);
+          return res.ok;
+        } catch {
+          clearTimeout(timer);
+          return false;
+        }
+      }
+
+      async function initProjectDriveFolders(apiBaseUrl, projectName) {
+        if (!apiBaseUrl) return null;
+        try {
+          const res = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/api/v1/projects/init-folders`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectName }),
+          });
+          if (!res.ok) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      }
+
+      async function uploadAssetsHybrid({
+        apiBaseUrl,
+        projectName,
+        phaseKey = 'concept',
+        title = '',
+        version = 1,
+        files = [],
+      }) {
+        const fileArray = Array.from(files);
+        const localRecords = [];
+
+        for (let i = 0; i < fileArray.length; i++) {
+          const file = fileArray[i];
+          const assetId = `img_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 7)}`;
+          const dataUrl = await fileToDataUrl(file);
+          await saveImageToIndexedDB(assetId, dataUrl, {
+            name: file.name,
+            projectName,
+            phaseKey,
+          });
+          localRecords.push({
+            assetId,
+            file,
+            dataUrl,
+            originalName: file.name,
+          });
+        }
+
+        if (apiBaseUrl) {
+          try {
+            const formData = new FormData();
+            formData.append('projectName', projectName);
+            formData.append('phaseKey', phaseKey);
+            if (title) formData.append('title', title);
+            formData.append('version', String(version));
+            fileArray.forEach((f) => formData.append('files', f));
+
+            const res = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/api/v1/designs/upload`, {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (res.ok) {
+              const json = await res.json();
+              if (json.success && Array.isArray(json.data)) {
+                return localRecords.map((rec, idx) => {
+                  const remote = json.data[idx];
+                  return {
+                    assetId: rec.assetId,
+                    title: title || rec.originalName.replace(/\.[^.]+$/, ''),
+                    imageUrl: remote?.urls?.previewImage || rec.dataUrl,
+                    localFallbackUrl: rec.dataUrl,
+                    driveFileId: remote?.fileId || null,
+                    driveViewUrl: remote?.urls?.driveView || null,
+                    syncedToDrive: Boolean(remote?.fileId),
+                  };
+                });
+              }
+            }
+          } catch {
+            // Fallback mulus ke IndexedDB lokal bila server offline
+          }
+        }
+
+        return localRecords.map((rec) => ({
+          assetId: rec.assetId,
+          title: title || rec.originalName.replace(/\.[^.]+$/, ''),
+          imageUrl: rec.dataUrl,
+          localFallbackUrl: rec.dataUrl,
+          driveFileId: null,
+          driveViewUrl: null,
+          syncedToDrive: false,
+        }));
+      }
+
+      // =========================================================================
+      // 2. CLOUD SYNC & CONFIG ADAPTER (PostgreSQL API + LocalStorage + Backup)
+      // =========================================================================
+      const CONFIG_KEY = 'arsiflow_studio_config_v4';
+      const PROJECTS_KEY = 'arsiflow_projects_data_v4';
+
+      function loadAppConfig() {
+        try {
+          const raw = localStorage.getItem(CONFIG_KEY);
+          return {
+            studioName: 'ArsiFlow Studio',
+            tagline: 'Architecture & Interior Planning',
+            logoUrl: '',
+            studioPin: '1234',
+            apiBaseUrl: 'http://localhost:4000',
+            masterKey: '',
+            ...(raw ? JSON.parse(raw) : {}),
+          };
+        } catch {
+          return {
+            studioName: 'ArsiFlow Studio',
+            tagline: 'Architecture & Interior Planning',
+            logoUrl: '',
+            studioPin: '1234',
+            apiBaseUrl: 'http://localhost:4000',
+            masterKey: '',
+          };
+        }
+      }
+
+      function saveAppConfig(cfg) {
+        try {
+          localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+        } catch {
+          // Ignore quota issues for custom logo if oversized
+        }
+      }
+
+      function loadLocalProjects() {
+        try {
+          const raw = localStorage.getItem(PROJECTS_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function saveLocalProjects(projectList) {
+        try {
+          // Simpan versi ringan ke localStorage (gambar biner besar tetap aman di IndexedDB)
+          const sanitized = projectList.map((proj) => ({
+            ...proj,
+            slides: (proj.slides || []).map((s) => ({
+              ...s,
+              imageUrl: s.localAssetId && s.imageUrl?.startsWith('data:image/') ? '' : s.imageUrl,
+              prevImageUrl: s.prevLocalAssetId && s.prevImageUrl?.startsWith('data:image/') ? '' : s.prevImageUrl,
+            })),
+          }));
+          localStorage.setItem(PROJECTS_KEY, JSON.stringify(sanitized));
+        } catch {
+          // Fallback jika storage browser penuh
+        }
+      }
+
+      async function syncProjectToCloud(cfg, project) {
+        if (!cfg.apiBaseUrl || !cfg.masterKey) {
+          return { ok: false, reason: 'API URL atau Studio Master Key belum diisi.' };
+        }
+
+        try {
+          const res = await fetch(
+            `${cfg.apiBaseUrl.replace(/\/$/, '')}/api/v1/projects/${encodeURIComponent(project.slug)}/sync`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cfg.masterKey}`,
+              },
+              body: JSON.stringify(project),
+            }
+          );
+
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            return { ok: false, reason: data.message || 'Gagal sinkronisasi ke cloud.' };
+          }
+
+          return {
+            ok: true,
+            clientAccessToken: data.clientAccessToken,
+            shareUrl: data.shareUrl,
+          };
+        } catch (err) {
+          return { ok: false, reason: err.message || 'Server tidak terjangkau.' };
+        }
+      }
+
+      async function fetchClientPresentation(cfg, slug, token) {
+        if (!cfg.apiBaseUrl || !slug || !token) return null;
+        try {
+          const url = `${cfg.apiBaseUrl.replace(/\/$/, '')}/api/v1/public/presentasi/${encodeURIComponent(slug)}?token=${encodeURIComponent(token)}`;
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          const data = await res.json();
+          return data.success ? data : null;
+        } catch {
+          return null;
+        }
+      }
+
+      async function postClientFeedback(cfg, slug, token, payload) {
+        if (!cfg.apiBaseUrl || !token) return null;
+        try {
+          const url = `${cfg.apiBaseUrl.replace(/\/$/, '')}/api/v1/public/presentasi/${encodeURIComponent(slug)}/feedback?token=${encodeURIComponent(token)}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      }
+
+      async function postClientPhaseApproval(cfg, slug, token, payload) {
+        if (!cfg.apiBaseUrl || !token) return null;
+        try {
+          const url = `${cfg.apiBaseUrl.replace(/\/$/, '')}/api/v1/public/presentasi/${encodeURIComponent(slug)}/approve?token=${encodeURIComponent(token)}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      }
+
+      function exportProjectAsJson(project, studio) {
+        const bundle = {
+          exportedAt: new Date().toISOString(),
+          app: 'ArsiFlow Studio v4',
+          studio,
+          project,
+        };
+        const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${project.slug || 'arsiflow-project'}-backup.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importProjectFromJson(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const parsed = JSON.parse(reader.result);
+              if (!parsed.project || !parsed.project.name) {
+                reject(new Error('Format file backup JSON tidak valid.'));
+                return;
+              }
+              resolve(parsed);
+            } catch (err) {
+              reject(err);
+            }
+          };
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+      }
+
+      // =========================================================================
+      // 3. SAMPLE DATA & INLINE SVG ARCHITECTURAL ILLUSTRATIONS
+      // =========================================================================
+      const SAMPLE_FLOORPLAN_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+          <rect width="800" height="500" fill="#162136"/>
+          <g stroke="#283857" stroke-width="1">
+            <path d="M0 50H800M0 100H800M0 150H800M0 200H800M0 250H800M0 300H800M0 350H800M0 400H800M0 450H800"/>
+            <path d="M100 0V500M200 0V500M300 0V500M400 0V500M500 0V500M600 0V500M700 0V500"/>
+          </g>
+          <rect x="120" y="80" width="560" height="340" fill="none" stroke="#F8FAFC" stroke-width="4"/>
+          <line x1="360" y1="80" x2="360" y2="290" stroke="#F8FAFC" stroke-width="3"/>
+          <line x1="120" y1="290" x2="500" y2="290" stroke="#F8FAFC" stroke-width="3"/>
+          <rect x="520" y="110" width="130" height="160" fill="rgba(194,109,59,0.22)" stroke="#C26D3B" stroke-width="2"/>
+          <text x="145" y="130" fill="#E2E8F0" font-family="sans-serif" font-size="16" font-weight="bold">LIVING &amp; DINING OPEN PLAN</text>
+          <text x="145" y="340" fill="#94A3B8" font-family="sans-serif" font-size="14">TERAS TROPIK &amp; KOLAM REFLEKSI</text>
+          <text x="538" y="195" fill="#FDBA74" font-family="sans-serif" font-size="14" font-weight="bold">INNER COURTYARD</text>
+        </svg>
+      `)}`;
+
+      const SAMPLE_FACADE_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#F5EFE6"/>
+              <stop offset="100%" stop-color="#E6DDD0"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="500" fill="url(#sky)"/>
+          <rect x="0" y="390" width="800" height="110" fill="#D6CFC2"/>
+          <rect x="150" y="150" width="500" height="240" fill="#FFFFFF" stroke="#1C1917" stroke-width="3"/>
+          <polygon points="120,150 400,75 680,150" fill="#C26D3B"/>
+          <rect x="190" y="185" width="180" height="170" fill="#292524"/>
+          <g stroke="#C26D3B" stroke-width="4">
+            <line x1="215" y1="185" x2="215" y2="355"/>
+            <line x1="240" y1="185" x2="240" y2="355"/>
+            <line x1="265" y1="185" x2="265" y2="355"/>
+            <line x1="290" y1="185" x2="290" y2="355"/>
+            <line x1="315" y1="185" x2="315" y2="355"/>
+            <line x1="340" y1="185" x2="340" y2="355"/>
+          </g>
+          <rect x="420" y="210" width="180" height="180" fill="#334155" stroke="#1C1917" stroke-width="2"/>
+          <text x="190" y="135" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold">STUDI FASAD TROPIS MODERN — KISI KAYU ULIN</text>
+        </svg>
+      `)}`;
+
+      function createDefaultProjects() {
+        return [
+          {
+            id: 'proj-menteng',
+            slug: 'rumah-tinggal-tropis-menteng',
+            name: 'Rumah Tinggal Tropis — Menteng',
+            clientName: 'Keluarga Bpk. Adi Pratama',
+            location: 'Menteng, Jakarta Pusat',
+            landArea: 320,
+            buildingArea: 260,
+            targetBudget: 2250000000,
+            activePhase: 'schematic',
+            clientAccessToken: 'demo-token-menteng-2026',
+            showRabToClient: true,
+            phasesStatus: {
+              concept: 'approved',
+              schematic: 'in_progress',
+              dd: 'pending',
+              ded: 'pending',
+            },
+            briefItems: [
+              { id: 'b1', text: '4 Kamar Tidur Utama + Kamar Mandi Dalam', done: true },
+              { id: 'b2', text: 'Inner Courtyard untuk sirkulasi udara silang alami', done: true },
+              { id: 'b3', text: 'Fasad kisi kayu ulin peredam panas matahari barat', done: false },
+            ],
+            rabItems: [
+              { id: 'r1', category: 'Struktur', name: 'Pekerjaan Pondasi & Beton Bertulang', unit: 'm2', volume: 260, unitPrice: 3200000 },
+              { id: 'r2', category: 'Arsitektur', name: 'Pasangan Dinding Bata Ringan & Plester Aci', unit: 'm2', volume: 420, unitPrice: 480000 },
+              { id: 'r3', category: 'Interior & Material', name: 'Kisi-kisi Fasad Kayu Ulin Kalimantan', unit: 'm2', volume: 48, unitPrice: 1650000 },
+              { id: 'r4', category: 'MEP', name: 'Instalasi Listrik, Tata Cahaya & Plambing', unit: 'ls', volume: 1, unitPrice: 245000000 },
+            ],
+            slides: [
+              {
+                id: 's1',
+                title: 'Denah Tata Ruang Lantai 1 & Inner Courtyard',
+                category: 'Denah Arsitektur',
+                phaseKey: 'concept',
+                description: 'Konsep open-plan yang menyatukan ruang keluarga dengan taman dalam untuk pencahayaan alami maksimal.',
+                version: 1,
+                isVisible: true,
+                syncedToDrive: false,
+                imageUrl: SAMPLE_FLOORPLAN_SVG,
+                prevImageUrl: null,
+                hotspots: [
+                  { id: 'h1', x: 72, y: 38, title: 'Inner Courtyard 4x5m', desc: 'Taman terbuka di tengah bangunan sebagai cerobong udara alami.' },
+                  { id: 'h2', x: 30, y: 42, title: 'Living & Dining Tanpa Sekat', desc: 'Memaksimalkan pandangan ke arah taman belakang seluas 7,5 meter.' },
+                ],
+                materials: [
+                  { name: 'Lantai Homogenous Tile Travertine', color: '#D6CFC2', brand: 'Roman 60x120', unit: 'm2', volume: 110, unitPrice: 420000 },
+                ],
+              },
+              {
+                id: 's2',
+                title: 'Studi Fasad Tropis Modern & Kisi Kayu',
+                category: 'Tampak Eksterior',
+                phaseKey: 'schematic',
+                description: 'Perpaduan atap limasan modern dengan secondary skin kisi kayu ulin untuk menjaga privasi dan meredam panas.',
+                version: 2,
+                isVisible: true,
+                syncedToDrive: false,
+                imageUrl: SAMPLE_FACADE_SVG,
+                prevImageUrl: SAMPLE_FLOORPLAN_SVG,
+                hotspots: [
+                  { id: 'h3', x: 35, y: 54, title: 'Secondary Skin Kayu Ulin', desc: 'Mengurangi radiasi panas langsung hingga 40% pada sore hari.' },
+                ],
+                materials: [
+                  { name: 'Kisi Kayu Ulin Finishing Natural', color: '#C26D3B', brand: 'Solid Ulin', unit: 'm2', volume: 48, unitPrice: 1650000 },
+                ],
+              },
+            ],
+            feedbacks: [
+              { id: 'f1', slideTitle: 'Denah Tata Ruang Lantai 1', reaction: 'approved', comment: 'Tata letak ruang keluarga dan taman dalam sudah sangat sesuai.', createdAt: '18 Nov 2026' },
+            ],
+            approvals: [
+              { id: 'a1', phaseKey: 'concept', approvedByName: 'Bpk. Adi Pratama', approvalNote: 'Konsep ruang & zonasi disetujui lanjut ke Schematic.', approvedAt: '15 Nov 2026' },
+            ],
+          },
+        ];
+      }
+
+      // =========================================================================
+      // 4. APPLICATION STATE & UI CONTROLLER
+      // =========================================================================
+      let config = loadAppConfig();
+      let projects = loadLocalProjects() || createDefaultProjects();
+      let currentProjectId = projects[0]?.id;
+      let phaseFilter = 'all';
+      let isClientLockedMode = false;
+      let editingSlideId = null;
+      let pendingHotspotCoords = null;
+      let presIndex = 0;
+      let laserEnabled = false;
+      let compareEnabled = false;
+      let selectedReaction = 'approved';
+
+      const PHASE_LABELS = {
+        concept: '01. Concept Design',
+        schematic: '02. Schematic Design',
+        dd: '03. Design Development',
+        ded: '04. Construction Doc',
+      };
+
+      function getCurrentProject() {
+        return projects.find((p) => p.id === currentProjectId) || projects[0];
+      }
+
+      function formatRupiah(num) {
+        return 'Rp ' + Math.round(Number(num) || 0).toLocaleString('id-ID');
+      }
+
+      function showToast(msg) {
+        const container = document.getElementById('toastContainer');
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3400);
+      }
+
+      function slugify(text) {
+        return String(text || 'proyek')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+
+      async function persistAndAutoSync(silent = true) {
+        saveLocalProjects(projects);
+        const project = getCurrentProject();
+        if (config.apiBaseUrl && config.masterKey && project) {
+          const res = await syncProjectToCloud(config, project);
+          if (res.ok && res.clientAccessToken) {
+            project.clientAccessToken = res.clientAccessToken;
+            saveLocalProjects(projects);
+            if (!silent) showToast('Proyek tersinkronisasi ke Cloud Database.');
+          } else if (!silent) {
+            showToast(`Sinkronisasi Cloud tertunda: ${res.reason}`);
+          }
+        } else if (!silent) {
+          showToast('Isi URL Backend & Studio Master Key untuk sinkronisasi cloud.');
+        }
+      }
+
+      async function hydrateProjectImages(project) {
+        if (!project?.slides) return;
+        for (const slide of project.slides) {
+          if (slide.localAssetId && (!slide.imageUrl || slide.imageUrl.startsWith('data:'))) {
+            const cached = await getImageFromIndexedDB(slide.localAssetId);
+            if (cached) slide.imageUrl = cached;
+          }
+          if (slide.prevLocalAssetId && (!slide.prevImageUrl || slide.prevImageUrl.startsWith('data:'))) {
+            const prevCached = await getImageFromIndexedDB(slide.prevLocalAssetId);
+            if (prevCached) slide.prevImageUrl = prevCached;
+          }
+        }
+      }
+
+      function applyStudioBranding() {
+        document.getElementById('studioNameDisplay').textContent = config.studioName;
+        document.getElementById('studioTaglineDisplay').textContent = config.tagline;
+        document.getElementById('presStudioName').textContent = config.studioName;
+
+        const logoImg = document.getElementById('studioLogoImg');
+        const badge = document.getElementById('studioLogoFallback');
+        if (config.logoUrl) {
+          logoImg.src = config.logoUrl;
+          logoImg.classList.remove('hidden');
+          badge.classList.add('hidden');
+        } else {
+          logoImg.classList.add('hidden');
+          badge.classList.remove('hidden');
+          badge.textContent = config.studioName.slice(0, 2).toUpperCase();
+        }
+      }
+
+      async function refreshServerStatus() {
+        const pill = document.getElementById('syncStatusPill');
+        const text = document.getElementById('syncStatusText');
+        const online = await checkDriveServerHealth(config.apiBaseUrl);
+        if (online) {
+          pill.classList.add('online');
+          text.textContent = 'Cloud & Drive Aktif';
+        } else {
+          pill.classList.remove('online');
+          text.textContent = 'Mode Lokal (Offline)';
+        }
+      }
+
+      function renderProjectSelector() {
+        const sel = document.getElementById('projectSelect');
+        sel.innerHTML = projects
+          .map((p) => `<option value="${p.id}" ${p.id === currentProjectId ? 'selected' : ''}>${p.name}</option>`)
+          .join('');
+      }
+
+      function renderMetaChips() {
+        const p = getCurrentProject();
+        const totalRab = p.rabItems.reduce((s, item) => s + item.volume * item.unitPrice, 0);
+        document.getElementById('projectMetaChips').innerHTML = `
+          <span class="meta-chip">Klien: ${p.clientName}</span>
+          <span class="meta-chip">Lokasi: ${p.location}</span>
+          <span class="meta-chip">LT/LB: ${p.landArea}m² / ${p.buildingArea}m²</span>
+          <span class="meta-chip">Fase: ${PHASE_LABELS[p.activePhase] || p.activePhase}</span>
+          <span class="meta-chip">Estimasi RAB: ${formatRupiah(totalRab)}</span>
+        `;
+      }
+
+      function renderStoryboard() {
+        const p = getCurrentProject();
+        const grid = document.getElementById('slidesGrid');
+        const filtered = phaseFilter === 'all' ? p.slides : p.slides.filter((s) => s.phaseKey === phaseFilter);
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div class="card"><p class="muted">Belum ada gambar pada filter fase ini. Klik <strong>+ Upload Gambar</strong> atau tarik gambar ke layar.</p></div>`;
+          return;
+        }
+
+        grid.innerHTML = filtered
+          .map((s) => {
+            const idx = p.slides.findIndex((item) => item.id === s.id);
+            const swatchesHtml = (s.materials || [])
+              .map(
+                (m) =>
+                  `<span class="swatch-tag"><span class="swatch-dot" style="background:${m.color}"></span>${m.name}</span>`
+              )
+              .join('');
+            return `
+              <article class="slide-card ${s.isVisible ? '' : 'is-hidden'}">
+                <div class="slide-thumb-box shimmer-skeleton">
+                  <img src="${s.imageUrl}" alt="${s.title}" loading="lazy"
+                    onload="this.parentElement.classList.remove('shimmer-skeleton')"
+                    onerror="this.src='https://placehold.co/800x500/EAE7E1/1C1917?text=Gambar+Desain';this.parentElement.classList.remove('shimmer-skeleton')" />
+                  <div class="slide-badges">
+                    <span class="pill-dark">#${idx + 1} • v${s.version} • ${PHASE_LABELS[s.phaseKey] || s.phaseKey}</span>
+                    ${s.syncedToDrive ? '<span class="pill-drive">Google Drive ✓</span>' : ''}
+                  </div>
+                </div>
+                <div class="slide-body">
+                  <div class="slide-title">${s.title}</div>
+                  <p class="slide-desc">${s.description || 'Belum ada narasi presentasi.'}</p>
+                  <div class="swatch-row">${swatchesHtml}</div>
+                  <span class="text-xs muted">📍 ${(s.hotspots || []).length} Hotspot Ruang • ${(s.materials || []).length} Material</span>
+                </div>
+                <div class="slide-actions">
+                  <button type="button" class="btn btn-outline btn-sm" data-action="edit-slide" data-id="${s.id}">Hotspot &amp; Material</button>
+                  <label class="btn btn-outline btn-sm file-btn">
+                    Revisi v${s.version + 1}
+                    <input type="file" accept="image/*" data-revision-id="${s.id}" hidden />
+                  </label>
+                  <button type="button" class="btn btn-ghost btn-sm" data-action="toggle-slide-vis" data-id="${s.id}">${s.isVisible ? 'Sembunyi' : 'Tampil'}</button>
+                  <button type="button" class="btn btn-ghost btn-sm" data-action="move-slide-up" data-id="${s.id}" title="Geser Naik">↑</button>
+                  <button type="button" class="btn btn-ghost btn-sm" data-action="move-slide-down" data-id="${s.id}" title="Geser Turun">↓</button>
+                  <button type="button" class="btn btn-danger-ghost btn-sm" data-action="delete-slide" data-id="${s.id}" title="Hapus Slide">✕</button>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+      }
+
+      function renderBriefAndRab() {
+        const p = getCurrentProject();
+        const doneCount = p.briefItems.filter((b) => b.done).length;
+        document.getElementById('briefProgressBadge').textContent = `${doneCount}/${p.briefItems.length} Terpenuhi`;
+
+        document.getElementById('briefList').innerHTML = p.briefItems
+          .map(
+            (b) => `
+            <li class="brief-item ${b.done ? 'done' : ''}">
+              <label>
+                <input type="checkbox" data-brief-toggle="${b.id}" ${b.done ? 'checked' : ''} />
+                <span>${b.text}</span>
+              </label>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="delete-brief" data-id="${b.id}">✕</button>
+            </li>
+          `
+          )
+          .join('');
+
+        document.getElementById('toggleClientRab').checked = p.showRabToClient !== false;
+
+        const totalRab = p.rabItems.reduce((s, item) => s + item.volume * item.unitPrice, 0);
+        const diff = p.targetBudget - totalRab;
+        document.getElementById('budgetSummaryStrip').innerHTML = `
+          <div class="stat-box"><span class="stat-label">Target Klien</span><span class="stat-val">${formatRupiah(p.targetBudget)}</span></div>
+          <div class="stat-box"><span class="stat-label">Total Estimasi</span><span class="stat-val">${formatRupiah(totalRab)}</span></div>
+          <div class="stat-box"><span class="stat-label">Selisih Anggaran</span><span class="stat-val" style="color:${diff >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatRupiah(diff)}</span></div>
+        `;
+
+        document.getElementById('rabTableBody').innerHTML = p.rabItems
+          .map(
+            (r) => `
+            <tr>
+              <td>${r.category}</td>
+              <td>${r.name}</td>
+              <td><input type="number" step="0.01" value="${r.volume}" data-rab-vol="${r.id}" style="width:74px" /></td>
+              <td>${r.unit}</td>
+              <td><input type="number" value="${r.unitPrice}" data-rab-price="${r.id}" style="width:124px" /></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-weight:600">${formatRupiah(r.volume * r.unitPrice)}</td>
+              <td><button type="button" class="btn btn-ghost btn-sm" data-action="delete-rab" data-id="${r.id}">✕</button></td>
+            </tr>
+          `
+          )
+          .join('');
+      }
+
+      function renderPhasesAndLogs() {
+        const p = getCurrentProject();
+        const keys = ['concept', 'schematic', 'dd', 'ded'];
+        document.getElementById('phasesStepper').innerHTML = keys
+          .map((k) => {
+            const st = p.phasesStatus[k] || 'pending';
+            const isAct = p.activePhase === k;
+            return `
+              <div class="phase-card ${st === 'approved' ? 'approved' : isAct ? 'active' : ''}">
+                <div class="text-xs muted" style="font-family:'JetBrains Mono',monospace">${st.toUpperCase()}</div>
+                <h4 class="mt-8 mb-8">${PHASE_LABELS[k]}</h4>
+                <button type="button" class="btn btn-outline btn-sm w-full" data-action="set-active-phase" data-phase="${k}">
+                  ${isAct ? 'Fase Aktif Saat Ini' : 'Jadikan Fase Aktif'}
+                </button>
+              </div>
+            `;
+          })
+          .join('');
+
+        document.getElementById('feedbackLogList').innerHTML =
+          (p.feedbacks || [])
+            .map(
+              (f) => `
+            <div class="log-entry">
+              <strong>${f.slideTitle || 'Umum'}</strong> • <span class="badge">${f.reaction}</span>
+              <p class="mt-8">${f.comment || '-'}</p>
+              <span class="text-xs muted">${f.createdAt}</span>
+            </div>
+          `
+            )
+            .join('') || '<p class="muted text-sm">Belum ada tanggapan dari klien.</p>';
+
+        document.getElementById('approvalLogList').innerHTML =
+          (p.approvals || [])
+            .map(
+              (a) => `
+            <div class="log-entry">
+              <strong>${PHASE_LABELS[a.phaseKey] || a.phaseKey}</strong> — Disahkan oleh <strong>${a.approvedByName}</strong>
+              <p class="mt-8">${a.approvalNote}</p>
+              <span class="text-xs muted">${a.approvedAt}</span>
+            </div>
+          `
+            )
+            .join('') || '<p class="muted text-sm">Belum ada pengesahan fase.</p>';
+      }
+
+      function renderAll() {
+        applyStudioBranding();
+        renderProjectSelector();
+        renderMetaChips();
+        renderStoryboard();
+        renderBriefAndRab();
+        renderPhasesAndLogs();
+      }
+
+      // =========================================================================
+      // 5. PRESENTATION & LOCKED CLIENT PORTAL (?view=client)
+      // =========================================================================
+      function buildPresentationDeck() {
+        const p = getCurrentProject();
+        const visibleSlides = (p.slides || []).filter((s) => s.isVisible !== false);
+        return [
+          { type: 'cover', title: 'Sampul Proyek' },
+          ...visibleSlides.map((s) => ({ type: 'visual', slide: s })),
+          { type: 'approval', title: 'Pengesahan Fase' },
+        ];
+      }
+
+      function startPresentation(locked = false) {
+        isClientLockedMode = locked;
+        presIndex = 0;
+        compareEnabled = false;
+        document.getElementById('presentationOverlay').classList.remove('hidden');
+        document.getElementById('exitPresBtn').classList.toggle('hidden', locked);
+        document.getElementById('unlockStudioBtn').classList.toggle('hidden', !locked);
+        if (locked) {
+          document.getElementById('architectWorkspace').classList.add('hidden');
+        } else {
+          document.getElementById('architectWorkspace').classList.remove('hidden');
+        }
+        renderPresentationSlide();
+      }
+
+      function renderPresentationSlide() {
+        const p = getCurrentProject();
+        const deck = buildPresentationDeck();
+        if (presIndex < 0) presIndex = 0;
+        if (presIndex >= deck.length) presIndex = deck.length - 1;
+
+        const current = deck[presIndex];
+        const stage = document.getElementById('presSlideContent');
+        const compareBtn = document.getElementById('compareToggleBtn');
+        document.getElementById('presProjectTitle').textContent = p.name;
+        document.getElementById('mobileSlideCounter').textContent = `${presIndex + 1} / ${deck.length}`;
+        document.getElementById('hotspotSheet').classList.add('hidden');
+
+        document.getElementById('presThumbStrip').innerHTML = deck
+          .map(
+            (item, idx) =>
+              `<button type="button" class="thumb-pill ${idx === presIndex ? 'active' : ''}" data-action="goto-slide" data-index="${idx}">${idx + 1}. ${item.type === 'cover' ? 'Sampul' : item.type === 'approval' ? 'Pengesahan' : item.slide.title}</button>`
+          )
+          .join('');
+
+        if (current.type === 'cover') {
+          compareBtn.classList.add('hidden');
+          const totalRab = p.rabItems.reduce((s, r) => s + r.volume * r.unitPrice, 0);
+          stage.innerHTML = `
+            <div class="cover-slide">
+              <span class="badge-terracotta">${PHASE_LABELS[p.activePhase] || p.activePhase}</span>
+              <h1 style="font-size:1.95rem;margin-top:12px">${p.name}</h1>
+              <p style="color:#CBD5E1;margin-top:6px">Disiapkan khusus untuk <strong>${p.clientName}</strong> • ${p.location}</p>
+              <div class="cover-grid">
+                <div class="cover-stat"><span class="text-xs" style="color:#94A3B8">Luas Tanah</span><div style="font-size:1.2rem;font-weight:700;margin-top:4px">${p.landArea} m²</div></div>
+                <div class="cover-stat"><span class="text-xs" style="color:#94A3B8">Luas Bangunan</span><div style="font-size:1.2rem;font-weight:700;margin-top:4px">${p.buildingArea} m²</div></div>
+                ${p.showRabToClient !== false ? `<div class="cover-stat"><span class="text-xs" style="color:#94A3B8">Estimasi Anggaran</span><div style="font-size:1.2rem;font-weight:700;margin-top:4px">${formatRupiah(totalRab)}</div></div>` : ''}
+              </div>
+              <h4 style="margin-bottom:8px">Ringkasan Kebutuhan Klien:</h4>
+              <ul style="padding-left:18px;color:#E2E8F0;font-size:0.9rem">
+                ${p.briefItems.map((b) => `<li style="margin-bottom:4px">${b.done ? '✓' : '○'} ${b.text}</li>`).join('') || '<li>Sesuai ringkasan diskusi awal proyek</li>'}
+              </ul>
+              <button type="button" class="btn btn-terracotta mt-16" data-action="next-slide">Mulai Tinjau Desain →</button>
+            </div>
+          `;
+          return;
+        }
+
+        if (current.type === 'approval') {
+          compareBtn.classList.add('hidden');
+          const isApproved = p.phasesStatus[p.activePhase] === 'approved';
+          stage.innerHTML = `
+            <div class="cover-slide">
+              <span class="badge-terracotta">Berita Acara Digital</span>
+              <h2 style="margin-top:10px">Pengesahan Tahap ${PHASE_LABELS[p.activePhase] || p.activePhase}</h2>
+              <p style="color:#CBD5E1;margin:8px 0 18px">Dengan menekan tombol pengesahan di bawah, Anda menyetujui materi desain pada fase ini untuk dilanjutkan ke tahap berikutnya.</p>
+              ${
+                isApproved
+                  ? `<div style="padding:16px;border-radius:10px;background:rgba(21,128,61,0.28);border:1px solid #22C55E;font-weight:600">✓ Fase ini telah disahkan secara digital.</div>`
+                  : `<form id="clientApproveForm">
+                      <label class="field-label" style="color:#E2E8F0">Nama Lengkap Penyetuju
+                        <input type="text" id="approveNameInput" value="${p.clientName}" required />
+                      </label>
+                      <label class="field-label" style="color:#E2E8F0">Catatan Persetujuan (Opsional)
+                        <input type="text" id="approveNoteInput" placeholder="Desain sudah sesuai dan dapat dilanjutkan" />
+                      </label>
+                      <button type="submit" class="btn btn-terracotta mt-12">✓ Sahkan Fase Ini Sekarang</button>
+                    </form>`
+              }
+            </div>
+          `;
+          return;
+        }
+
+        // Visual Slide
+        const s = current.slide;
+        compareBtn.classList.toggle('hidden', !s.prevImageUrl);
+
+        const hotspotsHtml = (s.hotspots || [])
+          .map(
+            (h, i) =>
+              `<button type="button" class="hotspot-pin" style="left:${h.x}%;top:${h.y}%" data-action="open-hotspot" data-hindex="${i}">${i + 1}</button>`
+          )
+          .join('');
+
+        const mediaHtml =
+          compareEnabled && s.prevImageUrl
+            ? `
+            <div class="ba-container">
+              <span class="ba-badge-left">Sebelum (v${Math.max(1, s.version - 1)})</span>
+              <span class="ba-badge-right">Terbaru (v${s.version})</span>
+              <img src="${s.prevImageUrl}" alt="Versi Sebelumnya" />
+              <div id="baAfterWrap" class="ba-after" style="clip-path: inset(0 0 0 50%)">
+                <img src="${s.imageUrl}" alt="Versi Terbaru" />
+              </div>
+              <input type="range" id="baSliderRange" class="ba-range" min="0" max="100" value="50" aria-label="Slider Perbandingan Sebelum dan Sesudah" />
+            </div>
+          `
+            : `
+            <div class="shimmer-skeleton">
+              <img src="${s.imageUrl}" alt="${s.title}"
+                onload="this.parentElement.classList.remove('shimmer-skeleton')"
+                onerror="this.src='https://placehold.co/960x600/060913/F8FAFC?text=Gambar+Presentasi';this.parentElement.classList.remove('shimmer-skeleton')" />
+              ${hotspotsHtml}
+            </div>
+          `;
+
+        stage.innerHTML = `
+          <div class="visual-slide-grid">
+            <div class="canvas-frame">${mediaHtml}</div>
+            <div>
+              <span class="badge-terracotta">${s.category} • v${s.version}</span>
+              <h2 style="margin-top:10px;font-size:1.5rem">${s.title}</h2>
+              <p style="color:#CBD5E1;margin-top:10px;font-size:0.95rem">${s.description || ''}</p>
+              ${
+                (s.materials || []).length
+                  ? `<div style="margin-top:16px">
+                      <span class="text-xs" style="color:#94A3B8;font-weight:700">SPESIFIKASI MATERIAL:</span>
+                      <div class="swatch-row mt-8">
+                        ${s.materials.map((m) => `<span class="swatch-tag" style="color:#1C1917"><span class="swatch-dot" style="background:${m.color}"></span>${m.name}</span>`).join('')}
+                      </div>
+                    </div>`
+                  : ''
+              }
+              <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="pres-tool-btn" data-action="toggle-feedback-drawer">💬 Beri Masukan Slide Ini</button>
+                <button type="button" class="btn btn-terracotta btn-sm" data-action="next-slide">Lanjut →</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // =========================================================================
+      // 6. SLIDE HOTSPOT & MATERIAL EDITOR
+      // =========================================================================
+      function openSlideEditor(slideId) {
+        editingSlideId = slideId;
+        pendingHotspotCoords = null;
+        document.getElementById('pendingHotspotBox').classList.add('hidden');
+
+        const p = getCurrentProject();
+        const s = p.slides.find((item) => item.id === slideId);
+        if (!s) return;
+
+        document.getElementById('editSlideTitle').value = s.title;
+        document.getElementById('editSlideCategory').value = s.category;
+        document.getElementById('editSlidePhase').value = s.phaseKey;
+        document.getElementById('editSlideDesc').value = s.description || '';
+        document.getElementById('editorPreviewImg').src = s.imageUrl;
+
+        renderEditorLists(s);
+        document.getElementById('slideEditorModal').classList.remove('hidden');
+      }
+
+      function renderEditorLists(s) {
+        document.getElementById('editorHotspotLayer').innerHTML = (s.hotspots || [])
+          .map(
+            (h, i) =>
+              `<span class="hotspot-pin" style="left:${h.x}%;top:${h.y}%;pointer-events:none">${i + 1}</span>`
+          )
+          .join('');
+
+        document.getElementById('editorHotspotList').innerHTML = (s.hotspots || [])
+          .map(
+            (h, i) => `
+            <div class="mini-item">
+              <span><strong>#${i + 1} ${h.title}:</strong> ${h.desc || '-'}</span>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="remove-hotspot" data-index="${i}">✕</button>
+            </div>
+          `
+          )
+          .join('');
+
+        document.getElementById('editorMaterialList').innerHTML = (s.materials || [])
+          .map(
+            (m, i) => `
+            <div class="mini-item">
+              <span><span class="swatch-dot" style="display:inline-block;background:${m.color}"></span> <strong>${m.name}</strong> (${m.volume} ${m.unit} × ${formatRupiah(m.unitPrice)})</span>
+              <div style="display:flex;gap:4px">
+                <button type="button" class="btn btn-outline btn-sm" data-action="push-mat-rab" data-index="${i}">Kirim ke RAB →</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-action="remove-material" data-index="${i}">✕</button>
+              </div>
+            </div>
+          `
+          )
+          .join('');
+      }
+
+      // =========================================================================
+      // 7. DETERMINISTIC QR CODE SVG GENERATOR (PURE JS)
+      // =========================================================================
+      function renderSimpleQrSvg(text) {
+        const size = 21;
+        let hash = 2166136261;
+        for (let i = 0; i < text.length; i++) {
+          hash ^= text.charCodeAt(i);
+          hash = Math.imul(hash, 16777619);
+        }
+        const cells = [];
+        for (let r = 0; r < size; r++) {
+          for (let c = 0; c < size; c++) {
+            const isFinder =
+              (r < 7 && c < 7) || (r < 7 && c >= size - 7) || (r >= size - 7 && c < 7);
+            let dark = false;
+            if (isFinder) {
+              const lr = r < 7 ? r : r - (size - 7);
+              const lc = c < 7 ? c : c - (size - 7);
+              dark = lr === 0 || lr === 6 || lc === 0 || lc === 6 || (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4);
+            } else {
+              const bit = ((hash >>> ((r * size + c) % 31)) ^ (r * 7 + c * 13)) & 1;
+              dark = bit === 1;
+            }
+            if (dark) cells.push(`<rect x="${c}" y="${r}" width="1" height="1" fill="#1C1917"/>`);
+          }
+        }
+        return `<svg viewBox="0 0 ${size} ${size}" width="154" height="154" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${cells.join('')}</svg>`;
+      }
+
+      // =========================================================================
+      // 8. FILE UPLOAD HANDLER
+      // =========================================================================
+      async function handleNewDesignFiles(files, revisionSlideId = null) {
+        if (!files || files.length === 0) return;
+        const p = getCurrentProject();
+        showToast(`Mengunggah ${files.length} gambar...`);
+
+        const targetSlide = revisionSlideId ? p.slides.find((s) => s.id === revisionSlideId) : null;
+        const nextVersion = targetSlide ? targetSlide.version + 1 : 1;
+
+        const uploaded = await uploadAssetsHybrid({
+          apiBaseUrl: config.apiBaseUrl,
+          projectName: p.name,
+          phaseKey: targetSlide ? targetSlide.phaseKey : p.activePhase,
+          title: targetSlide ? targetSlide.title : '',
+          version: nextVersion,
+          files,
+        });
+
+        if (targetSlide && uploaded[0]) {
+          targetSlide.prevImageUrl = targetSlide.imageUrl;
+          targetSlide.prevLocalAssetId = targetSlide.localAssetId || null;
+          targetSlide.imageUrl = uploaded[0].imageUrl;
+          targetSlide.localAssetId = uploaded[0].assetId;
+          targetSlide.version = nextVersion;
+          targetSlide.syncedToDrive = uploaded[0].syncedToDrive;
+          showToast(`Revisi v${nextVersion} berhasil diperbarui!`);
+        } else {
+          uploaded.forEach((item, idx) => {
+            p.slides.push({
+              id: `slide_${Date.now()}_${idx}`,
+              title: item.title,
+              category: 'Konsep & Visual',
+              phaseKey: p.activePhase,
+              description: '',
+              version: 1,
+              isVisible: true,
+              localAssetId: item.assetId,
+              syncedToDrive: item.syncedToDrive,
+              driveFileId: item.driveFileId,
+              imageUrl: item.imageUrl,
+              prevImageUrl: null,
+              hotspots: [],
+              materials: [],
+            });
+          });
+          showToast(`${uploaded.length} gambar ditambahkan ke papan presentasi.`);
+        }
+
+        await persistAndAutoSync(true);
+        renderAll();
+      }
+
+      // =========================================================================
+      // 9. INITIALIZATION & EVENT DELEGATION
+      // =========================================================================
+      document.addEventListener('DOMContentLoaded', async () => {
+        const params = new URLSearchParams(window.location.search);
+        const viewMode = params.get('view');
+        const paramSlug = params.get('project');
+        const paramToken = params.get('token');
+
+        await refreshServerStatus();
+
+        for (const proj of projects) {
+          await hydrateProjectImages(proj);
+        }
+
+        if (viewMode === 'client') {
+          document.getElementById('architectWorkspace').classList.add('hidden');
+          document.getElementById('presentationOverlay').classList.remove('hidden');
+          document.getElementById('presSkeleton').classList.remove('hidden');
+
+          if (paramSlug && paramToken) {
+            const liveData = await fetchClientPresentation(config, paramSlug, paramToken);
+            if (liveData) {
+              config.studioName = liveData.studio.name;
+              const mappedProject = {
+                id: liveData.project.slug,
+                slug: liveData.project.slug,
+                name: liveData.project.name,
+                clientName: liveData.project.clientName,
+                location: liveData.project.location,
+                landArea: liveData.project.landArea,
+                buildingArea: liveData.project.buildingArea,
+                targetBudget: liveData.project.targetBudget,
+                activePhase: liveData.project.activePhase,
+                phasesStatus: liveData.project.phasesStatus,
+                briefItems: liveData.project.briefItems || [],
+                rabItems: [],
+                showRabToClient: Boolean(liveData.project.rabSummary),
+                clientAccessToken: paramToken,
+                slides: (liveData.slides || []).map((s) => ({
+                  id: s.id,
+                  title: s.title,
+                  category: s.category,
+                  phaseKey: s.phase_key,
+                  description: s.description,
+                  version: s.version,
+                  isVisible: true,
+                  imageUrl: s.image_url,
+                  prevImageUrl: s.prev_image_url,
+                  hotspots: s.hotspots || [],
+                  materials: s.materials || [],
+                })),
+              };
+              projects = [mappedProject];
+              currentProjectId = mappedProject.id;
+            } else if (paramSlug) {
+              const localMatch = projects.find((p) => p.slug === paramSlug);
+              if (localMatch) currentProjectId = localMatch.id;
+            }
+          }
+
+          document.getElementById('presSkeleton').classList.add('hidden');
+          applyStudioBranding();
+          startPresentation(true);
+          return;
+        }
+
+        renderAll();
+      });
+
+      document.addEventListener('click', async (e) => {
+        const tabBtn = e.target.closest('[data-tab]');
+        if (tabBtn) {
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+          tabBtn.classList.add('active');
+          document.getElementById(`tab-${tabBtn.dataset.tab}`).classList.add('active');
+          return;
+        }
+
+        const filterBtn = e.target.closest('[data-phase-filter]');
+        if (filterBtn) {
+          phaseFilter = filterBtn.dataset.phaseFilter;
+          document.querySelectorAll('[data-phase-filter]').forEach((b) => b.classList.remove('active'));
+          filterBtn.classList.add('active');
+          renderStoryboard();
+          return;
+        }
+
+        const actionEl = e.target.closest('[data-action]');
+        if (!actionEl) return;
+        const action = actionEl.dataset.action;
+        const p = getCurrentProject();
+
+        if (action === 'close-modals') {
+          document.querySelectorAll('.modal-backdrop').forEach((m) => m.classList.add('hidden'));
+        } else if (action === 'open-new-project') {
+          document.getElementById('newProjectModal').classList.remove('hidden');
+        } else if (action === 'open-settings') {
+          document.getElementById('cfgStudioName').value = config.studioName;
+          document.getElementById('cfgStudioTagline').value = config.tagline;
+          document.getElementById('cfgStudioPin').value = config.studioPin;
+          document.getElementById('cfgApiUrl').value = config.apiBaseUrl;
+          document.getElementById('cfgMasterKey').value = config.masterKey;
+          document.getElementById('settingsModal').classList.remove('hidden');
+        } else if (action === 'save-settings') {
+          config.studioName = document.getElementById('cfgStudioName').value.trim() || 'ArsiFlow Studio';
+          config.tagline = document.getElementById('cfgStudioTagline').value.trim();
+          config.studioPin = document.getElementById('cfgStudioPin').value.trim() || '1234';
+          config.apiBaseUrl = document.getElementById('cfgApiUrl').value.trim();
+          config.masterKey = document.getElementById('cfgMasterKey').value.trim();
+          saveAppConfig(config);
+          await refreshServerStatus();
+          await persistAndAutoSync(true);
+          renderAll();
+          document.getElementById('settingsModal').classList.add('hidden');
+          showToast('Pengaturan studio disimpan.');
+        } else if (action === 'manual-cloud-sync') {
+          config.apiBaseUrl = document.getElementById('cfgApiUrl').value.trim();
+          config.masterKey = document.getElementById('cfgMasterKey').value.trim();
+          saveAppConfig(config);
+          await refreshServerStatus();
+          await persistAndAutoSync(false);
+        } else if (action === 'open-share') {
+          await persistAndAutoSync(true);
+          const baseUrl = window.location.href.split('?')[0].split('#')[0];
+          const shareUrl = `${baseUrl}?view=client&project=${encodeURIComponent(p.slug)}&token=${encodeURIComponent(p.clientAccessToken || 'demo-token')}`;
+          document.getElementById('shareUrlInput').value = shareUrl;
+          document.getElementById('qrCodeBox').innerHTML = renderSimpleQrSvg(shareUrl);
+          const waText = encodeURIComponent(`Halo ${p.clientName}, berikut tautan presentasi desain arsitektur proyek *${p.name}* dari ${config.studioName}:\n${shareUrl}`);
+          document.getElementById('whatsappShareBtn').href = `https://wa.me/?text=${waText}`;
+          document.getElementById('shareModal').classList.remove('hidden');
+        } else if (action === 'copy-share-url') {
+          const inp = document.getElementById('shareUrlInput');
+          inp.select();
+          inp.setSelectionRange(0, 99999);
+          try {
+            document.execCommand('copy');
+            showToast('Tautan presentasi klien disalin!');
+          } catch {
+            showToast('Silakan salin tautan secara manual.');
+          }
+        } else if (action === 'preview-client-mode') {
+          document.getElementById('shareModal').classList.add('hidden');
+          startPresentation(true);
+        } else if (action === 'start-presentation') {
+          startPresentation(false);
+        } else if (action === 'exit-presentation') {
+          document.getElementById('presentationOverlay').classList.add('hidden');
+        } else if (action === 'open-pin-unlock') {
+          document.getElementById('pinUnlockInput').value = '';
+          document.getElementById('pinErrorMsg').classList.add('hidden');
+          document.getElementById('pinUnlockModal').classList.remove('hidden');
+        } else if (action === 'next-slide') {
+          presIndex++;
+          renderPresentationSlide();
+        } else if (action === 'prev-slide') {
+          presIndex--;
+          renderPresentationSlide();
+        } else if (action === 'goto-slide') {
+          presIndex = Number(actionEl.dataset.index);
+          renderPresentationSlide();
+        } else if (action === 'jump-approval') {
+          presIndex = buildPresentationDeck().length - 1;
+          renderPresentationSlide();
+        } else if (action === 'toggle-laser') {
+          laserEnabled = !laserEnabled;
+          actionEl.classList.toggle('active', laserEnabled);
+          document.getElementById('laserDot').classList.toggle('hidden', !laserEnabled);
+        } else if (action === 'toggle-compare') {
+          compareEnabled = !compareEnabled;
+          actionEl.classList.toggle('active', compareEnabled);
+          renderPresentationSlide();
+        } else if (action === 'open-hotspot') {
+          const deck = buildPresentationDeck();
+          const h = deck[presIndex]?.slide?.hotspots?.[Number(actionEl.dataset.hindex)];
+          if (h) {
+            document.getElementById('hotspotBadge').textContent = `Titik #${Number(actionEl.dataset.hindex) + 1}`;
+            document.getElementById('hotspotTitle').textContent = h.title;
+            document.getElementById('hotspotDesc').textContent = h.desc || 'Detail area desain.';
+            document.getElementById('hotspotSheet').classList.remove('hidden');
+          }
+        } else if (action === 'close-hotspot-sheet') {
+          document.getElementById('hotspotSheet').classList.add('hidden');
+        } else if (action === 'toggle-feedback-drawer') {
+          document.getElementById('clientFeedbackDrawer').classList.toggle('hidden');
+        } else if (action === 'submit-client-feedback') {
+          const comment = document.getElementById('clientCommentInput').value.trim();
+          const deck = buildPresentationDeck();
+          const activeSlide = deck[presIndex]?.slide;
+          p.feedbacks = p.feedbacks || [];
+          p.feedbacks.unshift({
+            id: `fb_${Date.now()}`,
+            slideTitle: activeSlide?.title || 'Presentasi Umum',
+            reaction: selectedReaction,
+            comment,
+            createdAt: new Date().toLocaleDateString('id-ID'),
+          });
+          saveLocalProjects(projects);
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('token')) {
+            await postClientFeedback(config, p.slug, params.get('token'), {
+              slideId: activeSlide?.id,
+              reaction: selectedReaction,
+              comment,
+            });
+          }
+          document.getElementById('clientCommentInput').value = '';
+          document.getElementById('clientFeedbackDrawer').classList.add('hidden');
+          renderPhasesAndLogs();
+          showToast('Tanggapan Anda telah dikirim ke arsitek.');
+        } else if (action === 'edit-slide') {
+          openSlideEditor(actionEl.dataset.id);
+        } else if (action === 'confirm-add-hotspot') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          const title = document.getElementById('pendingHsTitle').value.trim();
+          const desc = document.getElementById('pendingHsDesc').value.trim();
+          if (s && pendingHotspotCoords && title) {
+            s.hotspots = s.hotspots || [];
+            s.hotspots.push({
+              id: `hs_${Date.now()}`,
+              x: pendingHotspotCoords.x,
+              y: pendingHotspotCoords.y,
+              title,
+              desc,
+            });
+            pendingHotspotCoords = null;
+            document.getElementById('pendingHotspotBox').classList.add('hidden');
+            renderEditorLists(s);
+            showToast('Titik hotspot ditambahkan.');
+          } else {
+            showToast('Isi judul titik hotspot terlebih dahulu.');
+          }
+        } else if (action === 'cancel-add-hotspot') {
+          pendingHotspotCoords = null;
+          document.getElementById('pendingHotspotBox').classList.add('hidden');
+        } else if (action === 'save-slide-editor') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          if (s) {
+            s.title = document.getElementById('editSlideTitle').value.trim() || s.title;
+            s.category = document.getElementById('editSlideCategory').value.trim();
+            s.phaseKey = document.getElementById('editSlidePhase').value;
+            s.description = document.getElementById('editSlideDesc').value.trim();
+            await persistAndAutoSync(true);
+            renderAll();
+          }
+          document.getElementById('slideEditorModal').classList.add('hidden');
+          showToast('Detail slide diperbarui.');
+        } else if (action === 'remove-hotspot') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          if (s) {
+            s.hotspots.splice(Number(actionEl.dataset.index), 1);
+            renderEditorLists(s);
+          }
+        } else if (action === 'remove-material') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          if (s) {
+            s.materials.splice(Number(actionEl.dataset.index), 1);
+            renderEditorLists(s);
+          }
+        } else if (action === 'push-mat-rab') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          const m = s?.materials?.[Number(actionEl.dataset.index)];
+          if (m) {
+            p.rabItems.push({
+              id: `rab_${Date.now()}`,
+              category: 'Interior & Material',
+              name: `${m.name} (${m.brand || 'Custom'})`,
+              unit: m.unit || 'm2',
+              volume: Number(m.volume) || 1,
+              unitPrice: Number(m.unitPrice) || 0,
+            });
+            await persistAndAutoSync(true);
+            renderBriefAndRab();
+            renderMetaChips();
+            showToast(`"${m.name}" ditambahkan ke Estimasi RAB.`);
+          }
+        } else if (action === 'toggle-slide-vis') {
+          const s = p.slides.find((item) => item.id === actionEl.dataset.id);
+          if (s) {
+            s.isVisible = !s.isVisible;
+            await persistAndAutoSync(true);
+            renderStoryboard();
+          }
+        } else if (action === 'move-slide-up' || action === 'move-slide-down') {
+          const idx = p.slides.findIndex((item) => item.id === actionEl.dataset.id);
+          const swapIdx = action === 'move-slide-up' ? idx - 1 : idx + 1;
+          if (idx >= 0 && swapIdx >= 0 && swapIdx < p.slides.length) {
+            [p.slides[idx], p.slides[swapIdx]] = [p.slides[swapIdx], p.slides[idx]];
+            await persistAndAutoSync(true);
+            renderStoryboard();
+          }
+        } else if (action === 'delete-slide') {
+          p.slides = p.slides.filter((item) => item.id !== actionEl.dataset.id);
+          await persistAndAutoSync(true);
+          renderStoryboard();
+          showToast('Slide dihapus dari papan presentasi.');
+        } else if (action === 'delete-brief') {
+          p.briefItems = p.briefItems.filter((b) => b.id !== actionEl.dataset.id);
+          await persistAndAutoSync(true);
+          renderBriefAndRab();
+        } else if (action === 'delete-rab') {
+          p.rabItems = p.rabItems.filter((r) => r.id !== actionEl.dataset.id);
+          await persistAndAutoSync(true);
+          renderBriefAndRab();
+          renderMetaChips();
+        } else if (action === 'set-active-phase') {
+          p.activePhase = actionEl.dataset.phase;
+          p.phasesStatus[p.activePhase] = 'in_progress';
+          await persistAndAutoSync(true);
+          renderAll();
+        } else if (action === 'export-json') {
+          exportProjectAsJson(p, config);
+          showToast('File backup .JSON diunduh.');
+        } else if (action === 'print-report') {
+          const totalRab = p.rabItems.reduce((s, r) => s + r.volume * r.unitPrice, 0);
+          document.getElementById('printReportArea').innerHTML = `
+            <h1>${config.studioName} — Laporan Perencanaan Arsitektur</h1>
+            <p><strong>Proyek:</strong> ${p.name} | <strong>Klien:</strong> ${p.clientName} | <strong>Lokasi:</strong> ${p.location}</p>
+            <p><strong>Estimasi Total RAB:</strong> ${formatRupiah(totalRab)}</p>
+            <hr/>
+            <h3>Daftar Slide &amp; Konsep Desain (${p.slides.length} Lembar)</h3>
+            ${p.slides.map((s, i) => `<p><strong>${i + 1}. ${s.title}</strong> (${PHASE_LABELS[s.phaseKey] || s.phaseKey}) — ${s.description || '-'}</p>`).join('')}
+          `;
+          window.print();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const rb = e.target.closest('[data-reaction]');
+        if (!rb) return;
+        selectedReaction = rb.dataset.reaction;
+        document.querySelectorAll('[data-reaction]').forEach((b) => b.classList.remove('active'));
+        rb.classList.add('active');
+      });
+
+      // Coordinate Hotspot Placement (Inline UI without prompt())
+      document.getElementById('editorCanvasWrap').addEventListener('click', (e) => {
+        const s = getCurrentProject().slides.find((item) => item.id === editingSlideId);
+        if (!s) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+        const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+        pendingHotspotCoords = { x, y };
+        document.getElementById('pendingHsCoords').textContent = `${x}%, ${y}%`;
+        document.getElementById('pendingHsTitle').value = '';
+        document.getElementById('pendingHsDesc').value = '';
+        document.getElementById('pendingHotspotBox').classList.remove('hidden');
+        document.getElementById('pendingHsTitle').focus();
+      });
+
+      // Form Submissions
+      document.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const p = getCurrentProject();
+
+        if (e.target.id === 'addBriefForm') {
+          const input = document.getElementById('newBriefInput');
+          p.briefItems.push({ id: `b_${Date.now()}`, text: input.value.trim(), done: false });
+          input.value = '';
+          await persistAndAutoSync(true);
+          renderBriefAndRab();
+        } else if (e.target.id === 'addRabForm') {
+          p.rabItems.push({
+            id: `r_${Date.now()}`,
+            category: document.getElementById('rabCatInput').value,
+            name: document.getElementById('rabNameInput').value.trim(),
+            unit: document.getElementById('rabUnitInput').value.trim(),
+            volume: Number(document.getElementById('rabVolInput').value) || 1,
+            unitPrice: Number(document.getElementById('rabPriceInput').value) || 0,
+          });
+          e.target.reset();
+          document.getElementById('rabUnitInput').value = 'm2';
+          await persistAndAutoSync(true);
+          renderBriefAndRab();
+          renderMetaChips();
+        } else if (e.target.id === 'addMaterialForm') {
+          const s = p.slides.find((item) => item.id === editingSlideId);
+          if (s) {
+            s.materials = s.materials || [];
+            s.materials.push({
+              color: document.getElementById('matColorInput').value,
+              name: document.getElementById('matNameInput').value.trim(),
+              brand: document.getElementById('matBrandInput').value.trim(),
+              unit: 'm2',
+              volume: Number(document.getElementById('matVolInput').value) || 1,
+              unitPrice: Number(document.getElementById('matPriceInput').value) || 0,
+            });
+            e.target.reset();
+            document.getElementById('matColorInput').value = '#C26D3B';
+            document.getElementById('matVolInput').value = '10';
+            document.getElementById('matPriceInput').value = '250000';
+            renderEditorLists(s);
+          }
+        } else if (e.target.id === 'newProjectForm') {
+          const name = document.getElementById('npName').value.trim();
+          const newProj = {
+            id: `proj_${Date.now()}`,
+            slug: `${slugify(name)}-${Math.random().toString(36).slice(2, 6)}`,
+            name,
+            clientName: document.getElementById('npClient').value.trim(),
+            location: document.getElementById('npLocation').value.trim(),
+            landArea: Number(document.getElementById('npLand').value) || 0,
+            buildingArea: Number(document.getElementById('npBuilding').value) || 0,
+            targetBudget: Number(document.getElementById('npBudget').value) || 0,
+            activePhase: 'concept',
+            clientAccessToken: `tok_${Math.random().toString(36).slice(2, 14)}`,
+            showRabToClient: true,
+            phasesStatus: { concept: 'in_progress', schematic: 'pending', dd: 'pending', ded: 'pending' },
+            briefItems: [],
+            rabItems: [],
+            slides: [],
+            feedbacks: [],
+            approvals: [],
+          };
+          projects.unshift(newProj);
+          currentProjectId = newProj.id;
+          await initProjectDriveFolders(config.apiBaseUrl, newProj.name);
+          await persistAndAutoSync(true);
+          renderAll();
+          document.getElementById('newProjectModal').classList.add('hidden');
+          e.target.reset();
+          showToast(`Proyek "${name}" berhasil dibuat!`);
+        } else if (e.target.id === 'pinUnlockForm') {
+          const entered = document.getElementById('pinUnlockInput').value.trim();
+          if (entered === (config.studioPin || '1234')) {
+            isClientLockedMode = false;
+            document.getElementById('pinUnlockModal').classList.add('hidden');
+            document.getElementById('presentationOverlay').classList.add('hidden');
+            document.getElementById('architectWorkspace').classList.remove('hidden');
+            try {
+              window.history.replaceState({}, '', window.location.pathname);
+            } catch {}
+            renderAll();
+            showToast('Ruang kerja Studio terbuka.');
+          } else {
+            document.getElementById('pinErrorMsg').classList.remove('hidden');
+          }
+        } else if (e.target.id === 'clientApproveForm') {
+          const approvedByName = document.getElementById('approveNameInput').value.trim();
+          const approvalNote = document.getElementById('approveNoteInput').value.trim() || 'Disetujui melalui Portal Klien';
+          p.phasesStatus[p.activePhase] = 'approved';
+          p.approvals = p.approvals || [];
+          p.approvals.unshift({
+            id: `app_${Date.now()}`,
+            phaseKey: p.activePhase,
+            approvedByName,
+            approvalNote,
+            approvedAt: new Date().toLocaleDateString('id-ID'),
+          });
+          saveLocalProjects(projects);
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('token')) {
+            await postClientPhaseApproval(config, p.slug, params.get('token'), {
+              phaseKey: p.activePhase,
+              approvedByName,
+              approvalNote,
+            });
+          }
+          renderPhasesAndLogs();
+          renderPresentationSlide();
+          showToast('Berita acara pengesahan fase berhasil dicatat!');
+        }
+      });
+
+      // Change & Input Listeners
+      document.addEventListener('change', async (e) => {
+        const p = getCurrentProject();
+
+        if (e.target.id === 'projectSelect') {
+          currentProjectId = e.target.value;
+          renderAll();
+        } else if (e.target.id === 'quickUploadInput') {
+          await handleNewDesignFiles(e.target.files);
+          e.target.value = '';
+        } else if (e.target.dataset.revisionId) {
+          await handleNewDesignFiles(e.target.files, e.target.dataset.revisionId);
+          e.target.value = '';
+        } else if (e.target.dataset.briefToggle) {
+          const item = p.briefItems.find((b) => b.id === e.target.dataset.briefToggle);
+          if (item) item.done = e.target.checked;
+          await persistAndAutoSync(true);
+          renderBriefAndRab();
+        } else if (e.target.id === 'toggleClientRab') {
+          p.showRabToClient = e.target.checked;
+          await persistAndAutoSync(true);
+        } else if (e.target.dataset.rabVol || e.target.dataset.rabPrice) {
+          const id = e.target.dataset.rabVol || e.target.dataset.rabPrice;
+          const item = p.rabItems.find((r) => r.id === id);
+          if (item) {
+            if (e.target.dataset.rabVol) item.volume = Number(e.target.value) || 0;
+            if (e.target.dataset.rabPrice) item.unitPrice = Number(e.target.value) || 0;
+            await persistAndAutoSync(true);
+            renderBriefAndRab();
+            renderMetaChips();
+          }
+        } else if (e.target.id === 'cfgStudioLogoInput' && e.target.files[0]) {
+          config.logoUrl = await fileToDataUrl(e.target.files[0]);
+          saveAppConfig(config);
+          applyStudioBranding();
+        } else if (e.target.id === 'importJsonInput' && e.target.files[0]) {
+          try {
+            const imported = await importProjectFromJson(e.target.files[0]);
+            imported.project.id = `proj_${Date.now()}`;
+            projects.unshift(imported.project);
+            currentProjectId = imported.project.id;
+            await persistAndAutoSync(true);
+            renderAll();
+            showToast('Paket proyek berhasil diimpor!');
+          } catch (err) {
+            showToast(err.message);
+          }
+        }
+      });
+
+      // Before/After Range Slider & Virtual Laser Pointer
+      document.addEventListener('input', (e) => {
+        if (e.target.id === 'baSliderRange') {
+          const afterWrap = document.getElementById('baAfterWrap');
+          if (afterWrap) {
+            afterWrap.style.clipPath = `inset(0 0 0 ${e.target.value}%)`;
+          }
+        }
+      });
+
+      document.addEventListener('pointermove', (e) => {
+        if (!laserEnabled) return;
+        const dot = document.getElementById('laserDot');
+        dot.style.left = `${e.clientX}px`;
+        dot.style.top = `${e.clientY}px`;
+      });
+
+      // Global Drag & Drop Upload
+      window.addEventListener('dragover', (e) => {
+        if (isClientLockedMode) return;
+        e.preventDefault();
+        document.getElementById('dropOverlay').classList.remove('hidden');
+      });
+      window.addEventListener('dragleave', (e) => {
+        if (e.relatedTarget === null) {
+          document.getElementById('dropOverlay').classList.add('hidden');
+        }
+      });
+      window.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        document.getElementById('dropOverlay').classList.add('hidden');
+        if (!isClientLockedMode && e.dataTransfer?.files?.length) {
+          await handleNewDesignFiles(e.dataTransfer.files);
+        }
+      });
+
+      // Keyboard & Touch Swipe Navigation in Presentation Mode
+      let touchStartX = 0;
+      document.getElementById('presStage').addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      document.getElementById('presStage').addEventListener('touchend', (e) => {
+        const diffX = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diffX) > 55) {
+          presIndex += diffX < 0 ? 1 : -1;
+          renderPresentationSlide();
+        }
+      }, { passive: true });
+
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('presentationOverlay').classList.contains('hidden')) return;
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (e.key === 'ArrowRight') {
+          presIndex++;
+          renderPresentationSlide();
+        } else if (e.key === 'ArrowLeft') {
+          presIndex--;
+          renderPresentationSlide();
+        } else if (e.key === 'Escape' && !isClientLockedMode) {
+          document.getElementById('presentationOverlay').classList.add('hidden');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
